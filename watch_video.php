@@ -124,6 +124,37 @@ if(isset($_POST['update_now'])){
 
 }
 
+if(isset($_POST['complete'])){
+
+   if($user_id != ''){
+
+      $content_id = $_POST['content_id'];
+      $content_id = filter_var($content_id, FILTER_SANITIZE_STRING);
+
+      $select_content = $conn->prepare("SELECT * FROM `content` WHERE id = ? LIMIT 1");
+      $select_content->execute([$content_id]);
+      $fetch_content = $select_content->fetch(PDO::FETCH_ASSOC);
+
+      $tutor_id = $fetch_content['tutor_id'];
+
+      $select_completion = $conn->prepare("SELECT * FROM `content_completion` WHERE user_id = ? AND content_id = ?");
+      $select_completion->execute([$user_id, $content_id]);
+
+      if($select_completion->rowCount() > 0){
+         $remove_completion = $conn->prepare("DELETE FROM `content_completion` WHERE user_id = ? AND content_id = ?");
+         $remove_completion->execute([$user_id, $content_id]);
+         $message[] = 'Marked as Incomplete!';
+      }else{
+         $insert_completion = $conn->prepare("INSERT INTO `content_completion`(user_id, tutor_id, content_id) VALUES(?,?,?)");
+         $insert_completion->execute([$user_id, $tutor_id, $content_id]);
+         $message[] = 'Marked as Complete!';
+      }
+
+   }else{
+      $message[] = 'Please login first!';
+   }
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -1628,6 +1659,18 @@ section{
    color: var(--main-color);
 }
 
+/*#overlay {
+   position: absolute;
+    top: 81%;
+    left: 0;
+    height: 2%;
+    width: 100%;
+    background-color: black;
+    z-index: 1;
+    opacity: 0.9;
+}*/
+
+
 /* media queries  */
 
 @media (max-width:1200px){
@@ -1754,13 +1797,13 @@ section{
          $fetch_edit_comment = $verify_comment->fetch(PDO::FETCH_ASSOC);
 ?>
 <section class="edit-comment">
-   <h1 class="heading">edti comment</h1>
+   <h1 class="heading">Edit Comment</h1>
    <form action="" method="post">
       <input type="hidden" name="update_id" value="<?= $fetch_edit_comment['id']; ?>">
-      <textarea name="update_box" class="box" maxlength="1000" required placeholder="please enter your comment" cols="30" rows="10"><?= $fetch_edit_comment['comment']; ?></textarea>
+      <textarea name="update_box" class="box" maxlength="1000" required placeholder="Please enter your comment" cols="30" rows="10"><?= $fetch_edit_comment['comment']; ?></textarea>
       <div class="flex">
-         <a href="watch_video.php?get_id=<?= $get_id; ?>" class="inline-option-btn">cancel edit</a>
-         <input type="submit" value="update now" name="update_now" class="inline-btn">
+         <a href="watch_video.php?get_id=<?= $get_id; ?>" class="inline-btn">Cancel edit</a>
+         <input type="submit" value="update now" name="update_now" class="inline-option-btn">
       </div>
    </form>
 </section>
@@ -1789,12 +1832,37 @@ section{
             $verify_likes = $conn->prepare("SELECT * FROM `likes` WHERE user_id = ? AND content_id = ?");
             $verify_likes->execute([$user_id, $content_id]);
 
+            $select_completion = $conn->prepare("SELECT * FROM `content_completion` WHERE content_id = ?");
+            $select_completion->execute([$content_id]);
+            $total_completion = $select_likes->rowCount();  
+
+            $verify_completion = $conn->prepare("SELECT * FROM `content_completion` WHERE user_id = ? AND content_id = ?");
+            $verify_completion->execute([$user_id, $content_id]);
+
             $select_tutor = $conn->prepare("SELECT * FROM `tutors` WHERE id = ? LIMIT 1");
             $select_tutor->execute([$fetch_content['tutor_id']]);
             $fetch_tutor = $select_tutor->fetch(PDO::FETCH_ASSOC);
    ?>
    <div class="video-details">
-      <iframe src="<?= $fetch_content['link']; ?>" class="video" poster="uploaded_files/<?= $fetch_content['thumb']; ?>" controls autoplay></iframe>
+      <iframe id="myVideo" src="<?= $fetch_content['link']; ?>" class="video" poster="uploaded_files/<?= $fetch_content['thumb']; ?>"></iframe>
+      <!--<div id="overlay"></div>-->
+      <form action="" method="post">
+         <input type="hidden" name="content_id" value="<?= $content_id; ?>">
+         <?php
+            if($verify_completion->rowCount() > 0){
+         ?>
+         <button type="submit" name="complete" class="inline-delete-btn" onclick="return confirm('Mark as Incomplete?');">Mark as Incomplete</button>
+         <button onclick = "stopVideo(body)" class="inline-delete-btn"> Stop Video </button>
+         <?php
+
+         }else{
+         ?>
+         <button type="submit" name="complete" class="inline-option-btn" onclick="return confirm('Mark as complete?');">Mark as Complete</button>
+         <button onclick = "stopVideo(body)" class="inline-delete-btn"> Stop Video </button>
+         <?php
+            }
+         ?>
+      </form> 
       <h3 class="title"><?= $fetch_content['title']; ?></h3>
       <div class="info">
          <p><i class="fas fa-calendar"></i><span><?= $fetch_content['date']; ?></span></p>
@@ -1898,9 +1966,22 @@ section{
 
 
 
+<script>
+      // to stop the video
+      function stopVideo(element) {
+         // getting every iframe from the body
+         var iframes = element.querySelectorAll('iframe');
+         // reinitializing the values of the src attribute of every iframe to stop the YouTube video.
+         for (let i = 0; i < iframes.length; i++) {
+            if (iframes[i] !== null) {
+               var temp = iframes[i].src;
+               iframes[i].src = temp;
+            }
+         }
+      };
+</script>
 
-
-<?php include 'components/footer.php'; ?>
+<?php //include 'components/footer.php'; //?>
 
 <!-- custom js file link  -->
 <script src="js/script.js"></script>
