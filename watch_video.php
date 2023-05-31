@@ -1965,7 +1965,7 @@ section{
 
          }else{
          ?>
-         <a type="btn" href="#" class="inline-btn">Complete all Certificated to generate your Certificate</a>
+         <a type="btn" href="#" class="inline-btn">Complete all Modules to generate your Certificate</a>
          <?php
             }
          ?>
