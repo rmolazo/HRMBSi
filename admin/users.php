@@ -1187,7 +1187,7 @@ section{
             <a href="update_user.php?get_id=<?= $id; ?>" class="option-btn"><i class="fas fa-pen"></i> Update</a>
             <input type="submit" value="delete" class="delete-btn" onclick="return confirm('Delete this user?');" name="delete">
          </form>
-         <a href="add_user_certificate.php?get_id=<?= $id; ?>" class="btn"><i class="fas fa-file"></i> Create Certificate</a>
+         <!--<a href="add_user_certificate.php?get_id=<?= $id; ?>" class="btn"><i class="fas fa-file"></i> Create Certificate</a>-->
          <a href="user_profile.php?get_id=<?= $id; ?>" class="btn"><i class="fas fa-eye"></i> View Profile</a>
       </div>
       <?php } ?>
