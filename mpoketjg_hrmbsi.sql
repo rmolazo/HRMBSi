@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 29, 2023 at 06:37 AM
+-- Generation Time: May 30, 2023 at 09:21 AM
 -- Server version: 10.4.21-MariaDB
 -- PHP Version: 8.0.11
 
@@ -38,7 +38,8 @@ CREATE TABLE `bookmark` (
 
 INSERT INTO `bookmark` (`user_id`, `playlist_id`) VALUES
 ('h71adG8ccSr3yYzgFLCc', '5bVvlbRyTkOiZwDTZbBQ'),
-('FJS7TUliW8gMQHqjCfVB', '5bVvlbRyTkOiZwDTZbBQ');
+('FJS7TUliW8gMQHqjCfVB', '5bVvlbRyTkOiZwDTZbBQ'),
+('sq9y6YYdgj8s6otaXLZQ', 'QpihrwXJrC6QiacJjR2Q');
 
 -- --------------------------------------------------------
 
@@ -54,6 +55,15 @@ CREATE TABLE `comments` (
   `comment` varchar(5000) NOT NULL,
   `date` date NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `comments`
+--
+
+INSERT INTO `comments` (`id`, `content_id`, `user_id`, `tutor_id`, `comment`, `date`) VALUES
+('XmZjn9kJVYusqoML1fTB', 'x0Lb8FReyhmveSuFWEgy', 'sq9y6YYdgj8s6otaXLZQ', 'U2PlqZwP2xwdqSNWBxmu', 'wew', '2023-05-30'),
+('bAE2rXV3SqFmK67cMrbN', 'ZA3sRbNhnm4pdxUmEB2n', 'sq9y6YYdgj8s6otaXLZQ', 'U2PlqZwP2xwdqSNWBxmu', 'nice video\r\n', '2023-05-30'),
+('cgOAr779w7Nkq2r30Sg6', 'ZA3sRbNhnm4pdxUmEB2n', 'sq9y6YYdgj8s6otaXLZQ', 'U2PlqZwP2xwdqSNWBxmu', 'wqewqewq', '2023-05-30');
 
 -- --------------------------------------------------------
 
@@ -77,7 +87,9 @@ CREATE TABLE `contact` (
 --
 
 INSERT INTO `contact` (`id`, `user_id`, `name`, `email`, `number`, `message`, `date`, `status`) VALUES
-('fbJdfD8CDMyXsTID5rxu', 'Gkkn5cOIfqSsl9nVjfsU', 'Angelica Bayron', 'angelica@gmail.com', '09984241972', 'SAMPLE FEEDBACK ON 88 MODULES', 'May 29, 2023, 11:00 am', 'Approved');
+('fbJdfD8CDMyXsTID5rxu', 'Gkkn5cOIfqSsl9nVjfsU', 'Angelica Bayron', 'angelica@gmail.com', '09984241972', 'SAMPLE FEEDBACK ON 88 MODULES', 'May 29, 2023, 11:00 am', 'Approved'),
+('TJfztfjUsg94fM16y1js', 'sq9y6YYdgj8s6otaXLZQ', 'John Doe', 'johndoe@gmail.com', '09984241972', 'wewew', 'May 30, 2023, 1:44 pm', '--'),
+('1fBzS8UlW65YvCUwdhfb', 'sq9y6YYdgj8s6otaXLZQ', 'John Doe', 'johndoe@gmail.com', '09984241972', 'ANOTHER ONE', 'May 30, 2023, 2:42 pm', '--');
 
 -- --------------------------------------------------------
 
@@ -103,8 +115,28 @@ CREATE TABLE `content` (
 --
 
 INSERT INTO `content` (`id`, `tutor_id`, `playlist_id`, `title`, `description`, `link`, `video`, `thumb`, `date`, `status`) VALUES
-('IaWig4tqgsdTs50driYY', 'U2PlqZwP2xwdqSNWBxmu', 'QpihrwXJrC6QiacJjR2Q', 'Sample Title', 'Sample Video', 'https://www.youtube.com/embed/Re6ZLW6gTVA', 'H3aoNYbI1yMgl91UobGA.', 'c3PeqWg1BdgHR6YihLhe.jpg', '2023-05-29', 'Active'),
-('JZoC91i7fQXpsgkpCBcR', 'U2PlqZwP2xwdqSNWBxmu', '5bVvlbRyTkOiZwDTZbBQ', 'The 8 Labor Laws that are Missing in the Labor Code | 88 Modules', 'HRMBSi Labor Laws', 'https://www.youtube.com/embed/DVXkEWXv7rQ', 'vKzSMOLfraNQcvxd5u19.', 'V3TYW8wOnAuyqp40W9Ce.png', '2023-05-29', 'Active');
+('x0Lb8FReyhmveSuFWEgy', 'U2PlqZwP2xwdqSNWBxmu', 'QpihrwXJrC6QiacJjR2Q', 'Sample MV', 'MV', 'https://www.youtube-nocookie.com/embed/dN44xpHjNxE?controls=0', 'bwcX0ZemwWfqXmt7jHTi.', 'eVBqC9BphRBKAROqsI3i.jpg', '2023-05-29', 'Active'),
+('ZA3sRbNhnm4pdxUmEB2n', 'U2PlqZwP2xwdqSNWBxmu', 'QpihrwXJrC6QiacJjR2Q', 'Sample MV Pt. 2', 'MV Pt. 2', 'https://www.youtube.com/embed/TrRUhNwWihk?controls=0', 'NG7ewFZb56gjigXkB1U3.', 'NN0gGfC359K8puzGhSRM.jpg', '2023-05-30', 'Active');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `content_completion`
+--
+
+CREATE TABLE `content_completion` (
+  `user_id` varchar(20) NOT NULL,
+  `tutor_id` varchar(20) NOT NULL,
+  `content_id` varchar(250) NOT NULL,
+  `date` date NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `content_completion`
+--
+
+INSERT INTO `content_completion` (`user_id`, `tutor_id`, `content_id`, `date`) VALUES
+('sq9y6YYdgj8s6otaXLZQ', 'U2PlqZwP2xwdqSNWBxmu', 'x0Lb8FReyhmveSuFWEgy', '2023-05-30');
 
 -- --------------------------------------------------------
 
@@ -154,7 +186,8 @@ CREATE TABLE `likes` (
 --
 
 INSERT INTO `likes` (`user_id`, `tutor_id`, `content_id`) VALUES
-('sq9y6YYdgj8s6otaXLZQ', 'U2PlqZwP2xwdqSNWBxmu', 'JZoC91i7fQXpsgkpCBcR');
+('sq9y6YYdgj8s6otaXLZQ', 'U2PlqZwP2xwdqSNWBxmu', 'JZoC91i7fQXpsgkpCBcR'),
+('sq9y6YYdgj8s6otaXLZQ', 'U2PlqZwP2xwdqSNWBxmu', 'x0Lb8FReyhmveSuFWEgy');
 
 -- --------------------------------------------------------
 
@@ -280,7 +313,20 @@ INSERT INTO `loginactivity` (`user_id`, `time`) VALUES
 ('angelica@gmail.com', 'May 29, 2023, 10:56 am'),
 ('yanveryeah@gmail.com', 'May 29, 2023, 11:55 am'),
 ('johndoe@gmail.com', 'May 29, 2023, 12:28 pm'),
-('yanveryeah@gmail.com', 'May 29, 2023, 12:36 pm');
+('yanveryeah@gmail.com', 'May 29, 2023, 12:36 pm'),
+('yanveryeah@gmail.com', 'May 29, 2023, 12:48 pm'),
+('yanveryeah@gmail.com', 'May 29, 2023, 4:13 pm'),
+('johndoe@gmail.com', 'May 29, 2023, 4:16 pm'),
+('yanveryeah@gmail.com', 'May 29, 2023, 4:19 pm'),
+('yanveryeah@gmail.com', 'May 29, 2023, 4:24 pm'),
+('yanveryeah@gmail.com', 'May 29, 2023, 5:51 pm'),
+('johndoe@gmail.com', 'May 29, 2023, 6:28 pm'),
+('yanveryeah@gmail.com', 'May 29, 2023, 6:30 pm'),
+('yanveryeah@gmail.com', 'May 29, 2023, 7:39 pm'),
+('johndoe@gmail.com', 'May 30, 2023, 12:33 pm'),
+('yanveryeah@gmail.com', 'May 30, 2023, 1:25 pm'),
+('yanveryeah@gmail.com', 'May 30, 2023, 2:45 pm'),
+('johndoe@gmail.com', 'May 30, 2023, 2:47 pm');
 
 -- --------------------------------------------------------
 
@@ -389,9 +435,7 @@ CREATE TABLE `reply` (
 --
 
 INSERT INTO `reply` (`id`, `user_id`, `name`, `email`, `message`, `date`) VALUES
-('fbJdfD8CDMyXsTID5rxu', 'Gkkn5cOIfqSsl9nVjfsU', 'Angelica Bayron', 'angelica@gmail.com', 'SAMPLE REPLY TO FEEDBACK', 'May 29, 2023, 11:01 am'),
-('fbJdfD8CDMyXsTID5rxu', 'U2PlqZwP2xwdqSNWBxmu', 'Yanver', 'yanveryeah@gmail.com', 'ADMIN REPLY TO FEEDBACK', 'May 29, 2023, 11:01 am'),
-('fbJdfD8CDMyXsTID5rxu', 'sq9y6YYdgj8s6otaXLZQ', 'John Doe', 'johndoe@gmail.com', 'WOW', 'May 29, 2023, 12:35 pm');
+('1fBzS8UlW65YvCUwdhfb', 'U2PlqZwP2xwdqSNWBxmu', 'Yanver', 'yanveryeah@gmail.com', 'WEW REPLY', 'May 30, 2023, 9:20 am');
 
 -- --------------------------------------------------------
 
