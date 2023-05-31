@@ -15,6 +15,96 @@ if(isset($_GET['get_id'])){
    header('location:home.php');
 }
 
+require "vendor/autoload.php";
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+
+if(isset($_POST['certificate'])){
+
+   $select_user = $conn->prepare("SELECT * FROM `users` WHERE id = ?");
+   $select_user->execute([$user_id]);
+   $fetch_user = $select_user->fetch(PDO::FETCH_ASSOC);
+      $id = $fetch_user['id'];
+      $name = $fetch_user['name'];
+      $email = $fetch_user['email'];
+      $status = $fetch_user['status'];
+
+   $phpmailer = new PHPMailer(true);
+
+   $phpmailer->isSMTP();
+   $phpmailer->SMTPAuth = true;
+    
+   $phpmailer->Host = "sandbox.smtp.mailtrap.io";
+   $phpmailer->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+   $phpmailer->Port = 2525;
+
+   $phpmailer->Username = '1969a7779d071c';
+   $phpmailer->Password = '476aaaaf064ce1';
+
+   $subject = "HRMBSI DLP";
+   $gmail = "inquiries@hrmbsi.com.ph";
+   $hname = "HRMBSI";
+   $hnumber = "8-663-0077";
+
+   //$user_id = $_POST['user_id'];
+   //$user_id = filter_var($user_id, FILTER_SANITIZE_STRING);
+   //$name = $_POST['name'];
+   //$name = filter_var($name, FILTER_SANITIZE_STRING);
+   //$email = $_POST['email'];
+   //$email = filter_var($email, FILTER_SANITIZE_STRING);
+   //$status = $_POST['status'];
+   //$status = filter_var($status, FILTER_SANITIZE_STRING);
+
+   $datetoday = date('M-d-Y');
+
+   $font = 'components/inc/16304_GARA.ttf';
+   $image = imagecreatefrompng("images/ecert.png"); // template ng cert
+   $color = imagecolorallocate($image, 19, 21, 22);
+   if (strlen($name) < 15){
+   imagettftext($image, 25, 0, 180, 305, $color, $font, $name);// Name sa gitna ng Cert
+   $date = date('M-d-Y');
+   imagettftext($image, 10, 0, 225, 435, $color, $font, $date); // Date
+   } else {
+   imagettftext($image, 25, 0, 105, 305, $color, $font, $name);// Name sa gitna ng Cert
+   $date = date('M-d-Y');
+   imagettftext($image, 10, 0, 220, 435, $color, $font, $date); // Date   
+   }
+   $file = $name;
+   $time = time();
+
+   imagepng($image, "uploaded_files/ecert/" . $file . "-" . $date . "-" . $time . ".png"); // ex. filename = User's Name-April-27-2022-125612.png
+   imagedestroy($image);
+
+   $attachment_link = $file . "-" . $date . "-" . $time . ".png";
+   $link_folder = 'uploaded_files/ecert/' . $attachment_link;
+
+         $insert_user = $conn->prepare("INSERT INTO `ecert`(user_id, name, email, attachmentlink, attachmentloc, date) VALUES(?,?,?,?,?,?)");
+         $insert_user->execute([$user_id, $name, $email, $attachment_link, $link_folder, $datetoday]);
+         $message[] = 'Certificate Created! Visit their profile to view their Certificate.';
+         //echo "<center><img src='$imgpath' class='img-thumbnail'><center>";   
+
+         $phpmailer->addAttachment("uploaded_files/ecert/" . $file . "-" . $date . "-" . $time . ".png");
+         $imgpath = ("uploaded_files/ecert/" . $file . "-" . $date . "-" . $time . ".png");
+
+         $msg = "Good Day $name, Your have completed all the modules and the certificate has been sent to your email - $email.
+
+         <center><img src='$imgpath' class='img-thumbnail'><center>
+   
+         Contact us for more details on our number $hnumber or email us at $gmail
+
+         Regards, $hname.";
+
+         $phpmailer->setFrom($gmail,$hname);
+         $phpmailer->addAddress($email, $name);
+
+         $phpmailer->Subject = $subject;
+         $phpmailer->Body = $msg;
+
+         $phpmailer->send();            
+         $message[] = 'Congratulations! You have received your certificate.';  
+}
+
 if(isset($_POST['like_content'])){
 
    if($user_id != ''){
@@ -1834,10 +1924,13 @@ section{
 
             $select_completion = $conn->prepare("SELECT * FROM `content_completion` WHERE content_id = ?");
             $select_completion->execute([$content_id]);
-            $total_completion = $select_likes->rowCount();  
+            $total_completion = $select_completion->rowCount();  
 
             $verify_completion = $conn->prepare("SELECT * FROM `content_completion` WHERE user_id = ? AND content_id = ?");
             $verify_completion->execute([$user_id, $content_id]);
+
+            $verify_completion1 = $conn->prepare("SELECT * FROM `content_completion` WHERE user_id = ?");
+            $verify_completion1->execute([$user_id]);
 
             $select_tutor = $conn->prepare("SELECT * FROM `tutors` WHERE id = ? LIMIT 1");
             $select_tutor->execute([$fetch_content['tutor_id']]);
@@ -1862,7 +1955,21 @@ section{
          <?php
             }
          ?>
-      </form> 
+
+         <input type="hidden" name="content_id" value="<?= $content_id; ?>">
+         <?php
+            if($verify_completion1->rowCount() >= 2){
+         ?>
+         <button type="submit" name="certificate" class="inline-option-btn" onclick="return confirm('Generate your Certificate?');">Generate Certificate</button>
+         <?php
+
+         }else{
+         ?>
+         <a type="btn" href="#" class="inline-btn">Complete all Certificated to generate your Certificate</a>
+         <?php
+            }
+         ?>
+      </form>
       <h3 class="title"><?= $fetch_content['title']; ?></h3>
       <div class="info">
          <p><i class="fas fa-calendar"></i><span><?= $fetch_content['date']; ?></span></p>
