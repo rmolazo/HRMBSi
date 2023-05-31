@@ -1683,6 +1683,7 @@ section{
          <p>User</p>
          <!--<a href="#" class="inline-btn">Payments</a>-->
          <button type="button" class="inline-btn" data-toggle="modal" data-target="#ecert"><i class="fas fa-file"></i> Certificates</button>
+         <a href="add_user_certificate.php?get_id=<?= $id; ?>" class="inline-btn"><i class="fas fa-plus"></i> Create Certificate</a>
          <button type="button" class="inline-btn" data-toggle="modal" data-target="#payments"><i class="fas fa-dollar"></i> Payments</button>
          <a href="add_user_payment.php?get_id=<?= $id; ?>" class="inline-btn"><i class="fas fa-plus"></i> Add Payment</a>
       </div>
@@ -1697,7 +1698,7 @@ section{
                   <span>Saved Playlists</span>
                </div>
             </div>
-            <a href="#" class="inline-btn"><i class="fas fa-eye"></i> View Playlists</a>
+            <a href="playlists.php" class="inline-btn"><i class="fas fa-eye"></i> View Playlists</a>
          </div>
 
          <div class="box">
@@ -1708,7 +1709,7 @@ section{
                   <span>Liked Tutorials</span>
                </div>
             </div>
-            <a href="#" class="inline-btn"><i class="fas fa-eye"></i> View liked</a>
+            <a href="contents.php" class="inline-btn"><i class="fas fa-eye"></i> View liked</a>
          </div>
 
          <div class="box">
@@ -1719,7 +1720,7 @@ section{
                   <span>View Comments</span>
                </div>
             </div>
-            <a href="#" class="inline-btn"><i class="fas fa-eye"></i> View comments</a>
+            <a href="comments.php" class="inline-btn"><i class="fas fa-eye"></i> View comments</a>
          </div>
 
       </div>
